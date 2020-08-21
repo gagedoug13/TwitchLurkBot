@@ -4,23 +4,24 @@ require('dotenv').config()
 
 let db = null
 let userCollection = null
-let chatCollection = null
 
 
 const { MongoClient } = require('mongodb')
 const uri = process.env.DB_URL
 
-const client = new MongoClient(uri, { useNewUrlParser: true });
+const client = new MongoClient(uri)
 
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-});
+client.connect().then(() => {
+  userCollection = client.db("lurkBase").collection("lurkData");
+  // perform actions on the collection 
+ 
+  console.log("connected")
+})
 
 
 
-
-request('https://tmi.twitch.tv/group/user/nylume/chatters', function (error, response, body) {
+const addRecordToCollection = setInterval(() => {
+  request('https://tmi.twitch.tv/group/user/nylume/chatters', function (error, response, body) {
 
     const timeStamp = new Date();
     
@@ -29,16 +30,11 @@ request('https://tmi.twitch.tv/group/user/nylume/chatters', function (error, res
     timeStampAndViewers.push({'allChatters': body})
     
   //  collection.push(timeStampAndViewers)
-    
-  
+    userCollection.insertOne({timeStampAndViewers}) 
+
+})}, 60000)
 
 
 
-})
-// require('dotenv').config()
-// fetch("tmi.twitch.tv/groups/user/nylume/chatters") 
-//     .then(response => response.json())
-//     .then(data => console.log(data))
-    
 
-// const client = new tmi.client(opts)
+
