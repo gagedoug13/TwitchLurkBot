@@ -1,20 +1,25 @@
-const tmi = require('tmi.js')
-const fs = require('fs')
 const request = require('request')
 
+require('dotenv').config()
 
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://gagedoug13:Biscuit62!@cluster0.icdxr.mongodb.net/test?retryWrites=true&w=majority";
+let db = null
+let userCollection = null
+let chatCollection = null
+
+
+const { MongoClient } = require('mongodb')
+const uri = process.env.DB_URL
+
 const client = new MongoClient(uri, { useNewUrlParser: true });
+
 client.connect(err => {
   const collection = client.db("test").collection("devices");
   // perform actions on the collection object
-  client.close();
 });
 
 
 
-let collection = []
+
 request('https://tmi.twitch.tv/group/user/nylume/chatters', function (error, response, body) {
 
     const timeStamp = new Date();
@@ -23,9 +28,9 @@ request('https://tmi.twitch.tv/group/user/nylume/chatters', function (error, res
     
     timeStampAndViewers.push({'allChatters': body})
     
-    collection.push(timeStampAndViewers)
+  //  collection.push(timeStampAndViewers)
     
-    console.log(collection)
+  
 
 
 
