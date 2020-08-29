@@ -10,13 +10,15 @@ let userCollection = null
 let currentStream = null
 const streamer = null
 
+let exampleData = "example"
+
 
 client.connect().then(() => {
   userCollection = client.db("lurkBase").collection("lurkData");
   console.log("connected")
 })
 
-const findCurrentStream = async(streamer) => {
+const findCurrentStream = async (streamer) => {
 
   // if (!currentStream) {
   //    create a new stream object in the user's streams. 
@@ -25,28 +27,44 @@ const findCurrentStream = async(streamer) => {
   // } else {
   //    FIND AND RETURN THE STREAM OBJECT
   // }
+
+  
 }
 
 
 const addScreenShot = (streamObject) => {
 //  ADD THE SCREENSHOT TO THE USER'S CURRENTSTREAM OBJECT
+  const timeStamp = new Date();
+    
+  const timeStampAndViewers = [{"timeStamp": timeStamp}]
+    
+  timeStampAndViewers.push({'allChatters': body})
+}
+
+const getStreamerDetails = async () => {
+  let firstPromise = new Promise((resolve, reject) => {
+    request({url: 'https://tmi.twitch.tv/group/user/bugha/chatters', json: true}, function (error, response, body) {
+    
+      if (error) {
+        return console.log("couldnt get streamer details")
+      }
+
+      resolve(body)
+    })
+    
+  })
+  
+  
+
 }
 
 
-const addRecordToCollection = setInterval((streamer) => {
-  request({url: 'https://tmi.twitch.tv/group/user/nylume/chatters', json: true}, function (error, response, body) {
+const addRecordToCollection = setInterval(() => {
+  
+  getStreamerDetails().then(response => console.log(response, "addRecordToCollection"))
 
-    streamer = timeStampAndViewers[1].allChatters.chatters.broadcaster[0]
 
-    findCurrentStream(streamer)
-
-    const timeStamp = new Date();
-    
-    const timeStampAndViewers = [{"timeStamp": timeStamp}]
-    
-    timeStampAndViewers.push({'allChatters': body})
-
-})}, 1000)
+  }, 1000)
 
 
 
