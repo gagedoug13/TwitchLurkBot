@@ -43,7 +43,7 @@ const addScreenShot = (streamObject) => {
 
 const getStreamerDetails = async () => {
   let firstPromise = new Promise((resolve, reject) => {
-    request({url: 'https://tmi.twitch.tv/group/user/bugha/chatters', json: true}, function (error, response, body) {
+    request({url: 'https://tmi.twitch.tv/group/user/nylume/chatters', json: true}, function (error, response, body) {
     
       if (error) {
         return console.log("couldnt get streamer details")
@@ -51,10 +51,10 @@ const getStreamerDetails = async () => {
 
       resolve(body)
     })
-    
+   
   })
   
-  
+  return await firstPromise
 
 }
 
