@@ -79,17 +79,3 @@ const addRecordToCollection = setInterval(() => {
   .then(data => addScreenShot(data))
 
   }, 1000)
-
-
-
-
-
-
-// MONGO METHODS  -
-
-// const user = await userCollection.find({userName: "nation_live"}).limit(1)
-
-
-// userCollection.drop(function(err, reply) {
-//    deletes userCollection database
-// })
