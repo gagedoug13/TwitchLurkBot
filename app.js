@@ -2,13 +2,14 @@ const request = require('request')
 require('dotenv').config()
 
 const { MongoClient } = require('mongodb')
+const { get } = require('request')
 
 const uri = process.env.DB_URL
 const client = new MongoClient(uri)
 
 let userCollection = null
-let currentStream = null
-const streamer = null
+
+const streamer = "nation_live"
 
 let exampleData = "example"
 
@@ -16,20 +17,28 @@ let exampleData = "example"
 client.connect().then(() => {
   userCollection = client.db("lurkBase").collection("lurkData");
   console.log("connected")
+ 
 })
 
-const findCurrentStream = async (streamer) => {
-
-  // if (!currentStream) {
-  //    create a new stream object in the user's streams. 
-  //    currentStream = true
-  //    RETURN THE STREAM OBJECT FOR NEXT FUNCTION
-  // } else {
-  //    FIND AND RETURN THE STREAM OBJECT
-  // }
-
-  
+const createStreamObject = async (streamer) => {
+    userCollection.findOneAndUpdate({userName:streamer}
+      , {$set: {stream:["basketball", "john", "Kumar", "fresh prince"]}}
+      , {
+            projection: {b:1, d:1}
+          , sort: {a:1}
+          , returnOriginal: false
+          , upsert: true
+        }
+      , function(err, r) {
+        
+    });
+  // console.log(user)
 }
+
+const getUser = async (streamerDetails) => {
+  return streamerDetails.chatters.broadcaster
+}
+
 
 
 const addScreenShot = (streamObject) => {
@@ -42,7 +51,7 @@ const addScreenShot = (streamObject) => {
 }
 
 const getStreamerDetails = async () => {
-  let firstPromise = new Promise((resolve, reject) => {
+  const firstPromise = new Promise((resolve, reject) => {
     request({url: 'https://tmi.twitch.tv/group/user/nylume/chatters', json: true}, function (error, response, body) {
     
       if (error) {
@@ -51,17 +60,17 @@ const getStreamerDetails = async () => {
 
       resolve(body)
     })
-   
   })
   
   return await firstPromise
-
 }
 
 
 const addRecordToCollection = setInterval(() => {
-  
-  getStreamerDetails().then(response => console.log(response, "addRecordToCollection"))
+  createStreamObject(streamer)
+  // getStreamerDetails()
+  // .then(response => getUser(response))
+  // .then(response => console.log(response))
 
 
   }, 1000)

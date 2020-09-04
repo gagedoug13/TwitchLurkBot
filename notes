@@ -1,0 +1,16 @@
+Logic for how the program is going to run - 
+
+Connection to DB is established
+find streamer and create new stream object 
+
+INTERVAL - runs once per minute
+get streamer details
+get screenshot
+append screenshot to users stream object
+
+------------------------------------------
+socket ends
+
+take data from stream object and create HTML file 
+email that file to streamer's email address
+
