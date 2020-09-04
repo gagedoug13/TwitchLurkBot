@@ -8,21 +8,21 @@ const uri = process.env.DB_URL
 const client = new MongoClient(uri)
 
 let userCollection = null
-
+let streamCounter = 1
 const streamer = "nation_live"
 
-let exampleData = "example"
 
 
 client.connect().then(() => {
   userCollection = client.db("lurkBase").collection("lurkData");
   console.log("connected")
- 
+  createStreamObject(streamer)
 })
 
 const createStreamObject = async (streamer) => {
+    const time = new Date();
     userCollection.findOneAndUpdate({userName:streamer}
-      , {$set: {stream:["basketball", "john", "Kumar", "fresh prince"]}}
+      , {$set: {streamObjects: []}}
       , {
             projection: {b:1, d:1}
           , sort: {a:1}
@@ -35,19 +35,35 @@ const createStreamObject = async (streamer) => {
   // console.log(user)
 }
 
-const getUser = async (streamerDetails) => {
-  return streamerDetails.chatters.broadcaster
+
+
+
+const createScreenShot = (streamerDetails) => {
+  const viewerList = streamerDetails.chatters.viewers
+  const time = new Date();
+  const timeStamp = {timeStamp: time}
+  timeStamp["viewerList"] = viewerList
+ 
+  return timeStamp
 }
 
 
 
 const addScreenShot = (streamObject) => {
 //  ADD THE SCREENSHOT TO THE USER'S CURRENTSTREAM OBJECT
-  const timeStamp = new Date();
-    
-  const timeStampAndViewers = [{"timeStamp": timeStamp}]
-    
-  timeStampAndViewers.push({'allChatters': body})
+  // const date = new Date;
+  userCollection.findOneAndUpdate({userName:streamer}
+    , {$set: {streamObjects: [{stream1: streamObject}]}}
+    , {
+          projection: {b:1, d:1}
+        , sort: {a:1}
+        , returnOriginal: false
+        , upsert: true
+      }
+    , function(err, r) {
+      
+  });
+ 
 }
 
 const getStreamerDetails = async () => {
@@ -63,15 +79,17 @@ const getStreamerDetails = async () => {
   })
   
   return await firstPromise
+  
 }
 
 
 const addRecordToCollection = setInterval(() => {
-  createStreamObject(streamer)
-  // getStreamerDetails()
-  // .then(response => getUser(response))
+ 
+  getStreamerDetails()
+  .then(data => createScreenShot(data))
+  .then(data => addScreenShot(data))
   // .then(response => console.log(response))
-
+  streamCounter++
 
   }, 1000)
 
