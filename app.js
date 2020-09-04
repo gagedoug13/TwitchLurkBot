@@ -1,16 +1,14 @@
 const request = require('request')
 require('dotenv').config()
+require('request')
 
 const { MongoClient } = require('mongodb')
-const { get } = require('request')
 
 const uri = process.env.DB_URL
 const client = new MongoClient(uri)
 
 let userCollection = null
-let streamCounter = 1
 const streamer = "nation_live"
-
 
 
 client.connect().then(() => {
@@ -30,9 +28,7 @@ const createStreamObject = async (streamer) => {
           , upsert: true
         }
       , function(err, r) {
-        
     });
-  // console.log(user)
 }
 
 
@@ -41,19 +37,18 @@ const createStreamObject = async (streamer) => {
 const createScreenShot = (streamerDetails) => {
   const viewerList = streamerDetails.chatters.viewers
   const time = new Date();
-  const timeStamp = {timeStamp: time}
-  timeStamp["viewerList"] = viewerList
+  const screenShot = {timeStamp: time}
+  screenShot["viewerList"] = viewerList
  
-  return timeStamp
+  return screenShot
 }
 
 
 
-const addScreenShot = (streamObject) => {
-//  ADD THE SCREENSHOT TO THE USER'S CURRENTSTREAM OBJECT
-  // const date = new Date;
+const addScreenShot = (screenShot) => {
+
   userCollection.findOneAndUpdate({userName:streamer}
-    , {$set: {streamObjects: [{stream1: streamObject}]}}
+    , {$set: {streamObjects: [{stream1: screenShot}]}}
     , {
           projection: {b:1, d:1}
         , sort: {a:1}
@@ -61,9 +56,7 @@ const addScreenShot = (streamObject) => {
         , upsert: true
       }
     , function(err, r) {
-      
   });
- 
 }
 
 const getStreamerDetails = async () => {
@@ -73,23 +66,17 @@ const getStreamerDetails = async () => {
       if (error) {
         return console.log("couldnt get streamer details")
       }
-
       resolve(body)
     })
   })
-  
   return await firstPromise
-  
 }
 
 
 const addRecordToCollection = setInterval(() => {
- 
   getStreamerDetails()
   .then(data => createScreenShot(data))
   .then(data => addScreenShot(data))
-  // .then(response => console.log(response))
-  streamCounter++
 
   }, 1000)
 
