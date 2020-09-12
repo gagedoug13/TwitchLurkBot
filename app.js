@@ -20,7 +20,7 @@ client.connect().then(() => {
 const createStreamObject = async (streamer) => {
     const time = new Date();
     userCollection.findOneAndUpdate({userName:streamer}
-      , {$set: {streamObjects: []}}
+      , {$set: {streamObjects: {stream1: {}}}}
       , {
             projection: {b:1, d:1}
           , sort: {a:1}
@@ -35,7 +35,7 @@ const createStreamObject = async (streamer) => {
 
 
 const createScreenShot = (streamerDetails) => {
-  const viewerList = streamerDetails.chatters.viewers
+  const viewerList = [streamerDetails.chatters.viewers]
   const time = new Date();
   const screenShot = {timeStamp: time}
   screenShot["viewerList"] = viewerList
@@ -77,5 +77,6 @@ const addRecordToCollection = setInterval(() => {
   getStreamerDetails()
   .then(data => createScreenShot(data))
   .then(data => addScreenShot(data))
+  // .then(data => console.log(data))
 
   }, 1000)
