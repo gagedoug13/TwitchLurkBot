@@ -31,9 +31,6 @@ const createStreamObject = async (streamer) => {
     });
 }
 
-
-
-
 const createScreenShot = (streamerDetails) => {
   const viewerList = [streamerDetails.chatters.viewers]
   const time = new Date();
@@ -42,8 +39,6 @@ const createScreenShot = (streamerDetails) => {
  
   return screenShot
 }
-
-
 
 const addScreenShot = (screenShot) => {
 
@@ -77,6 +72,6 @@ const addRecordToCollection = setInterval(() => {
   getStreamerDetails()
   .then(data => createScreenShot(data))
   .then(data => addScreenShot(data))
-  // .then(data => console.log(data))
+ 
 
   }, 1000)
