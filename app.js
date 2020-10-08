@@ -10,7 +10,6 @@ const client = new MongoClient(uri)
 let userCollection = null
 const streamer = "nation_live"
 
-
 client.connect().then(() => {
   userCollection = client.db("lurkBase").collection("lurkData");
   console.log("connected")
